@@ -81,8 +81,10 @@ char data[MAX];
 				exit(0);//
 			}
 	}
-	if (strcmp (data, "exits")==0)
+	if (strcmp (data, "exit")==0)
 	{
+		printf("%s\n","server closed");
+		close(sock);
 		exit (1);
 	}
 	close(sock);
