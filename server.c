@@ -94,7 +94,7 @@ char data[MAX];
                     }
                     fflush(NULL);
                     //printf("Data sent so far %s\n", path);
-                memset(path,0,MAX);
+                memset(path,0,MAX);//
                 }
                 close(pipefd[0]);
                 return;// This causes the process to terminate instead of returning to main(). Use return instead.

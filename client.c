@@ -69,5 +69,5 @@ int main(int argc, char *argv[])
         printf("\n");
         //close(sock); <-- this was removed for troubleshooting purposes and may be re-added
         if(strcmp(s,"exit") == 0)
-        exit(0);
+        exit(0);//
     }
