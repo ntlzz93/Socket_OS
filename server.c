@@ -39,7 +39,6 @@ char buffer[BUFFSIZE];
 int received = -1;
 char data[MAX];
 
-<<<<<<< HEAD
     data[0] = '\0';
     if((received = recv(sock, buffer,BUFFSIZE,0))<0){
 
@@ -49,11 +48,7 @@ char data[MAX];
     buffer[received] = '\0';
 
     strcat (data,  buffer);
-    
-       /* if(send(sock,buffer, received,0)!= received){
-            Die("Failed");
-        }*/
-/*
+/* This while block has been removed. It causes the server to wait for more data from client when all data are already received.
     while(received>0)
     {
         if(send(sock,buffer, received,0)!= received){
@@ -81,11 +76,11 @@ char data[MAX];
 
         if(pid==0)
         {
-            close(1);
-            dup2(pipefd[1],1);
-            close(pipefd[0]);
-            close(pipefd[1]);
-            execvp(args[0],args);
+            close(1); // close the original stdout
+            dup2(pipefd[1],1); // duplicate pipefd[1] as stdout
+            close(pipefd[0]); // close the readonly end of the pipe
+            close(pipefd[1]); // close the original writeonly end of the pipe
+            execvp(args[0],args); // execute the command. this will not return and will exit at completion unless the executed args[0] doesn't end.
         }
         else
             if(pid>0)
@@ -93,16 +88,16 @@ char data[MAX];
                 close(pipefd[1]);
                 memset(path,0,MAX);
                 while(lenght=read(pipefd[0],path,MAX-1)){
-                    printf("Data read so far %s\n", path);
+                    printf("%s\n", path);
                     if(send(sock,path,strlen(path),0) != strlen(path) ){
                         Die("Failed");
                     }
                     fflush(NULL);
-                    printf("Data sent so far %s\n", path);
-                memset(path,0,MAX);
+                    //printf("Data sent so far %s\n", path);
+                memset(path,0,MAX);//
                 }
                 close(pipefd[0]);
-                exit(1);//
+                return;// This causes the process to terminate instead of returning to main(). Use return instead.
             }
             else
             {
@@ -115,67 +110,13 @@ char data[MAX];
     }
     printf("Closing socket\n");
     close(sock);
-=======
-	data[0] = '\0';
-
-	if((received = recv(sock, buffer,BUFFSIZE,0))<0){
-
-		Die("Failed");
-	}
-
-	buffer[received] = '\0';
-	strcat (data,  buffer);
-	while(received>0)
-	{
-		if(send(sock,buffer, received,0)!= received){
-			Die("Failed");
-		}
-		if((received=recv(sock,buffer,BUFFSIZE,0))<0){
-			Die("Failed");
-		}
-
-		buffer[received] = '\0';
-		strcat (data, buffer);
-	}
-
-	puts (data);
-	{
-		char *args[100];
-		setup(data,args,0);
-		pid_t pid = fork();
-		if(pid>0)
-		{
-			
-	    	while (wait(NULL) != pid);
-		}
-		else
-			if(pid==0)
-			{
-				//child process
-				execvp(args[0],args);
-				exit(1);//
-			}
-			else
-			{
-				printf("Error !\n");
-				exit(0);//
-			}
-	}
-	if (strcmp (data, "exit")==0)
-	{
-		printf("%s\n","server closed");
-		close(sock);
-		exit (1);
-	}
-	close(sock);
->>>>>>> tmp
 }
 
 int main(int argc, char const *argv[])
 {
     int serversock,clientsock;
     struct sockaddr_in echoserver, echoclient;
-    signal(SIGPIPE, SIG_IGN);
+    signal(SIGPIPE, SIG_IGN); //ignoring SIGPIPE to allow the code to handle the failures instead of crashing with SIGPIPE.
     if((serversock = socket(PF_INET, SOCK_STREAM,IPPROTO_TCP))<0){
         Die("Failed");
     }
