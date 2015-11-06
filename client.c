@@ -14,6 +14,7 @@ void Die(char *mess)
 }
 int main(int argc, char *argv[]) 
 {
+ while(1){
     int sock;
     struct sockaddr_in echoserver;
     char buffer[BUFFSIZE];
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
         {
             Die("Failed to receive bytes from server");
         }
+	
         received += bytes;
         buffer[bytes] = '\0';
         /* Assure null terminated string */
@@ -71,3 +73,4 @@ int main(int argc, char *argv[])
         if(strcmp(s,"exit") == 0)
         exit(0);//
     }
+}

@@ -97,7 +97,7 @@ char data[MAX];
                 memset(path,0,MAX);//
                 }
                 close(pipefd[0]);
-                return;// This causes the process to terminate instead of returning to main(). Use return instead.
+                //return;// This causes the process to terminate instead of returning to main(). Use return instead.
             }
             else
             {
@@ -106,20 +106,23 @@ char data[MAX];
             }
     if (strcmp (data, "exits")==0)
     {
+	printf("Closing socket\n");
         exit (1);
     }
-    printf("Closing socket\n");
+    
     close(sock);
 }
 
 int main(int argc, char const *argv[])
 {
+
     int serversock,clientsock;
     struct sockaddr_in echoserver, echoclient;
     signal(SIGPIPE, SIG_IGN); //ignoring SIGPIPE to allow the code to handle the failures instead of crashing with SIGPIPE.
     if((serversock = socket(PF_INET, SOCK_STREAM,IPPROTO_TCP))<0){
         Die("Failed");
     }
+
     memset(&echoserver,0,sizeof(echoserver));
     echoserver.sin_family = AF_INET;
     echoserver.sin_addr.s_addr= htonl(INADDR_ANY);
@@ -142,7 +145,8 @@ int main(int argc, char const *argv[])
         fprintf(stdout, "Client connected: %s\n",
                         inet_ntoa(echoclient.sin_addr));
         fprintf(stdout,"Message from client:");
-        HandeClient(clientsock);        
+        HandeClient(clientsock); 
+	      
     }
 
     return 0;
