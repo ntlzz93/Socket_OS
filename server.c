@@ -48,20 +48,6 @@ char data[MAX];
     buffer[received] = '\0';
 
     strcat (data,  buffer);
-/* This while block has been removed. It causes the server to wait for more data from client when all data are already received.
-    while(received>0)
-    {
-        if(send(sock,buffer, received,0)!= received){
-            Die("Failed");
-        }
-        if((received=recv(sock,buffer,BUFFSIZE,0))<0){
-            Die("Failed");
-        }
-
-        buffer[received] = '\0';
-        strcat (data, buffer);
-    }
-*/
 
     puts (data);
         char *args[100];
@@ -97,7 +83,7 @@ char data[MAX];
                 memset(path,0,MAX);//
                 }
                 close(pipefd[0]);
-                //return;// This causes the process to terminate instead of returning to main(). Use return instead.
+                //return
             }
             else
             {
